@@ -1,0 +1,63 @@
+# ── CraveExpress — reproducible multi-service environment ─────────────────────
+# Brings up MongoDB, the API, and the Next.js web app with a single command:
+#   docker compose up --build
+#
+# Secrets below are DEV defaults. For production, supply real values via a .env
+# file or your orchestrator's secret store — never commit live keys.
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: crave-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+    container_name: crave-api
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV:               production
+      PORT:                   "4000"
+      MONGODB_URI:            mongodb://mongo:27017/craveexpress
+      JWT_ACCESS_SECRET:      ${JWT_ACCESS_SECRET:-dev-access-secret-change-me}
+      JWT_REFRESH_SECRET:     ${JWT_REFRESH_SECRET:-dev-refresh-secret-change-me}
+      CSRF_SECRET:            ${CSRF_SECRET:-dev-csrf-secret-change-me}
+      MFA_ENCRYPTION_KEY:     ${MFA_ENCRYPTION_KEY:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+      PII_ENCRYPTION_KEY:     ${PII_ENCRYPTION_KEY:-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb}
+      CLIENT_URL:             http://localhost:3000
+      FRONTEND_ORIGIN:        http://localhost:3000
+      # eSewa sandbox — override with live merchant creds in production
+      ESEWA_PRODUCT_CODE:     ${ESEWA_PRODUCT_CODE:-EPAYTEST}
+      ESEWA_SECRET_KEY:       ${ESEWA_SECRET_KEY:-8gBm/:&EnhH.1/q}
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:4000/api
+    container_name: crave-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+
+volumes:
+  mongo-data:

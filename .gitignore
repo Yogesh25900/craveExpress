@@ -1,0 +1,61 @@
+# ── Secrets — never commit ────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.test
+
+# ── Dependencies ──────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+
+# ── Build output ──────────────────────────────────────────────────────────────
+dist/
+build/
+.next/
+out/
+
+# ── TypeScript ────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── Test coverage ─────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── OS / IDE ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/settings.json
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.pem
+.vercel
+
+# ── Office temp/lock files ─────────────────────────────────────────────────────
+~$*
+*.tmp
+
+# ── Coursework deliverables (not source code) ─────────────────────────────────
+*.docx
+
+# ── Planning docs / READMEs excluded from history ──────────────────────────────
+/PLAN.md
+/README.md
+/SECURITY.md
+/BASELINE_SECURITY_PLAN.md
+/SECURITY_FEATURES_PLAN.md
+/SECURITY_IMPLEMENTATION_LOG.md
+frontend/README.md
+backend/README.md
+
+# ── Git history generator script (meta, not part of the app) ──────────────────
+/generate-git-history.ps1
+/GIT_HISTORY_REPORT.md
