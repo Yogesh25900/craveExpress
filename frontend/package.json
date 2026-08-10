@@ -11,7 +11,7 @@
     "audit:fix": "npm audit fix"
   },
   "dependencies": {
-    "@types/leaflet": "^1.9.21",
+    "@types/leaflet": "^1.9.22",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.17.0",
     "next": "16.2.9",
